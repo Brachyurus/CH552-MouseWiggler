@@ -45,6 +45,7 @@
 // Libraries
 #include "src/system.h"                   // system functions
 #include "src/usb_keyboard.h"             // USB HID keyboard functions
+#include <stdbool.h>                      // boolean functions
 
 // Prototypes for used interrupts
 void USB_interrupt(void);
@@ -59,8 +60,7 @@ void delay(void) {
 // ===================================================================================
 // Main Function
 // ===================================================================================
-void main(void) {
-  // Setup
+void main(void) {                         // Setup
   CLK_config();                           // configure system clock
   KBD_init();                             // init USB HID keyboard
 
@@ -73,19 +73,30 @@ void main(void) {
   P1_DIR_PU &= ~(1 << 6);    // clear output bit → input
   P1_DIR_PU |= (1 << 6);     // enable internal pull-up (1 = pull-up enabled)
 
-  // Loop
-  while(1) {
-    if(!(P1 & (1 << 5))) {
-      KBD_press('a');
-    } else {
-      KBD_release('a');
-    }
+  bool key_a = true;
+  bool key_b = true;
 
-    if (!(P1 & (1 << 6))) {
-      KBD_press('b');
-    } else {
-      KBD_release('b');
+  while (1) {
+
+    bool new_a = (P1 & (1 << 5)) != 0;
+    bool new_b = (P1 & (1 << 6)) != 0;
+
+    if (new_a != key_a) {
+      key_a = new_a;
+      if (key_a) {
+        KBD_release('a');
+      } else {
+        KBD_press('a');
+      }
     }
+    if (new_b != key_b) {
+      key_b = new_b;
+      if (key_b) {
+        KBD_release('b');
+      } else {
+        KBD_press('b');
+      }
+    }
+    delay();
   }
-  delay();
 }
