@@ -30,8 +30,8 @@ void main(void) {                         // Setup
   bool prev_state_b = true;
 
   // default characters
-  char left_key_char = 'a';
-  char right_key_char = 'b';
+  char left_key_char = '[';
+  char right_key_char = ']';
 
   // read both input pins once
   bool state_a = (P1 & (1 << 5)) != 0;
@@ -39,8 +39,8 @@ void main(void) {                         // Setup
 
   // if both paddles are pressed while USB device is being plugged in, '[' and ']' characters will be used
   if (!state_a && !state_b) {
-    left_key_char = '[';
-    right_key_char = ']';
+    left_key_char = 'a';
+    right_key_char = 'b';
   }
 
   while (1) {
